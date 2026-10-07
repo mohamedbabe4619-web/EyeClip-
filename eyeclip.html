@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EyeClip</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+
+<!-- الرئيسية -->
+<div class="page active" id="home">
+  <header>
+    <div class="logo">EyeClip
+      <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>
+    </div>
+    <div class="icons">
+      <button class="circle"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button>
+      <button class="circle"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+    </div>
+  </header>
+  <div class="box">
+    <div class="compose"><div class="av c3 s48">m</div><input placeholder="بماذا تفكر؟"></div>
+    <div class="acts"><span>🔴 بث مباشر</span><span>🖼️ صورة</span><span>🙂 شعور</span></div>
+  </div>
+  <div class="stories">
+    <div class="st"><button class="av add s68">+</button>قصتك</div>
+    <div class="st"><div class="av c2 s68 ring">س</div>سارة</div>
+    <div class="st"><div class="av c1 s68 ring">ي</div>يوسف</div>
+    <div class="st"><div class="av c6 s68 ring">ل</div>لينا</div>
+    <div class="st"><div class="av c4 s68 ring">م</div>مريم</div>
+  </div>
+  <div class="post">
+    <div class="ph"><div class="av c6 s48">ل</div><div><b>لينا الشمري</b><small>قبل ١٠ دقائق · الرياض</small></div></div>
+    <p>يوم هادئ في الاستوديو ✨ خلّصنا مشروع جديد وقلبي مليان امتنان.</p>
+    <img class="img" src="photo.jpg" alt="">
+    <div class="pa"><span onclick="this.classList.toggle('on')">❤️ إعجاب</span><span>💬 تعليق</span><span>↗️ مشاركة</span></div>
+  </div>
+</div>
+
+<!-- ريلز -->
+<div class="page" id="reels">
+  <div class="rwrap" id="rwrap">
+    <div class="rl">
+      <video src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" loop playsinline muted preload="metadata" onclick="togglePlay(this)"></video>
+      <div class="rinfo"><div class="ru"><div class="av c5 s48">ن</div><b>نور العلي</b></div><p>أول ريلز لي 🌸</p></div>
+      <div class="rside">
+        <button onclick="likeReel(this)">❤️<span>0</span></button>
+        <button id="mbtn" onclick="toggleMute()">🔇</button>
+        <button>↗️</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- الأصدقاء -->
+<div class="page" id="friends">
+  <header><h1>الأصدقاء</h1>
+    <div class="icons"><button class="circle"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button></div>
+  </header>
+  <div class="box"><h2>طلبات الصداقة</h2>
+    <div class="row" id="r1"><div class="av c1 s78">ي</div><div class="info"><b>يوسف العتيبي</b><small>12 صديقاً مشتركاً</small>
+      <div class="btns"><button class="btn ok" onclick="hideRow('r1')">تأكيد</button><button class="btn no" onclick="hideRow('r1')">حذف</button></div></div></div>
+    <div class="row" id="r2"><div class="av c2 s78">س</div><div class="info"><b>سارة النجار</b><small>5 أصدقاء مشتركين</small>
+      <div class="btns"><button class="btn ok" onclick="hideRow('r2')">تأكيد</button><button class="btn no" onclick="hideRow('r2')">حذف</button></div></div></div>
+  </div>
+  <div class="box"><h2>قد تعرفهم</h2>
+    <div class="row"><div class="av c3 s56">ع</div><div class="info"><b>علي الحربي</b><small>21 صديقاً مشتركاً</small></div><button class="addb" onclick="this.textContent='تمت ✓'">إضافة</button></div>
+    <div class="row"><div class="av c4 s56">م</div><div class="info"><b>مريم القحطاني</b><small>8 أصدقاء مشتركين</small></div><button class="addb" onclick="this.textContent='تمت ✓'">إضافة</button></div>
+    <div class="row"><div class="av c5 s56">ن</div><div class="info"><b>نور العلي</b><small>3 أصدقاء مشتركين</small></div><button class="addb" onclick="this.textContent='تمت ✓'">إضافة</button></div>
+  </div>
+</div>
+
+<!-- الإشعارات -->
+<div class="page" id="notifs">
+  <header><h1>الإشعارات</h1>
+    <div class="icons"><button class="circle"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></button></div>
+  </header>
+  <div style="padding:8px 10px">
+    <div class="sec">اليوم</div>
+    <div class="nt new"><div class="av c3 s56">ع</div><div class="t"><b>علي الحربي</b> أعجب بمنشورك<small>قبل ٥ دقائق</small></div><div class="dot"></div></div>
+    <div class="nt new"><div class="av c2 s56">س</div><div class="t"><b>سارة النجار</b> علّقت: «لقطة رائعة!»<small>قبل ٢٠ دقيقة</small></div><div class="dot"></div></div>
+    <div class="nt new"><div class="av c4 s56">م</div><div class="t"><b>مريم القحطاني</b> أرسلت لك طلب صداقة<small>قبل ساعة</small></div><div class="dot"></div></div>
+    <div class="sec" style="margin-top:16px">سابقاً</div>
+    <div class="nt"><div class="av c5 s56">ن</div><div class="t"><b>نور العلي</b> نشرت ريلز جديد<small>أمس</small></div></div>
+    <div class="nt"><div class="av c1 s56">ي</div><div class="t"><b>يوسف العتيبي</b> شارك منشورك<small>أمس</small></div></div>
+  </div>
+</div>
+
+<nav>
+  <button class="active" onclick="go('home',this)"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10H3z"/></svg>الرئيسية</button>
+  <button onclick="go('reels',this)"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="14" rx="2"/><path d="M3 7l3-4h4l-3 4M12 7l3-4h4l-3 4"/></svg>ريلز</button>
+  <button onclick="go('friends',this)"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="4"/><path d="M2 21c0-4 3-7 7-7s7 3 7 7M17 4a4 4 0 0 1 0 8M22 21c0-3-2-5-4-6"/></svg>الأصدقاء</button>
+  <button onclick="go('notifs',this)"><span class="badge">3</span><svg viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21a2 2 0 0 0 4 0"/></svg>الإشعارات</button>
+</nav>
+
+<script src="eyeclip.js"></script>
+<script type="module" src="cloud.js"></script>
+</body>
+</html>
