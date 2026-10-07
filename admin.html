@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Tahoma,Arial,sans-serif;background:#f2f4f7;padding:14px;color:#111827}
+h1{margin-bottom:12px}
+.card{background:#fff;border-radius:14px;padding:14px;margin-bottom:14px}
+.card h2{font-size:18px;margin-bottom:10px;color:#2b6be6}
+input,select,textarea{width:100%;padding:11px;margin-bottom:8px;border:1px solid #d1d5db;border-radius:10px;font-family:inherit;font-size:15px}
+button{padding:11px 16px;border:0;border-radius:10px;background:#2b6be6;color:#fff;font-family:inherit;font-size:15px}
+button.del{background:#e11d48;padding:6px 12px;font-size:13px}
+button.gray{background:#6b7280}
+.item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-top:1px solid #eee;font-size:14px}
+.top{display:flex;gap:8px;margin-bottom:14px}
+.top a{flex:1;text-align:center;padding:11px;background:#111827;color:#fff;border-radius:10px;text-decoration:none}
+</style>
+</head>
+<body>
+<h1>لوحة تحكم EyeClip</h1>
+<div class="top"><a href="index.html">فتح الموقع</a><button class="gray" style="flex:1" onclick="resetAll()">إعادة الضبط</button></div>
+
+<div class="card"><h2>الإعدادات</h2>
+  <input id="appName" placeholder="اسم التطبيق">
+  <input id="meLetter" placeholder="حرف حسابك" maxlength="2">
+  <button onclick="saveSettings()">حفظ</button>
+</div>
+
+<div class="card"><h2>المستخدمون</h2>
+  <input id="uName" placeholder="الاسم الكامل">
+  <input id="uMutual" type="number" placeholder="عدد الأصدقاء المشتركين">
+  <select id="uColor"><option value="1">أخضر مزرق</option><option value="2">وردي</option><option value="3">أزرق</option><option value="4">ذهبي</option><option value="5">أخضر</option><option value="6">مرجاني</option></select>
+  <button onclick="addUser()">إضافة مستخدم</button>
+  <div id="usersList"></div>
+</div>
+
+<div class="card"><h2>المنشورات</h2>
+  <select id="pUser"></select>
+  <textarea id="pText" rows="3" placeholder="نص المنشور"></textarea>
+  <input id="pTime" placeholder="الوقت والمكان (مثال: قبل ساعة · جدة)">
+  <input id="pImage" placeholder="رابط صورة (اختياري)">
+  <button onclick="addPost()">نشر</button>
+  <div id="postsList"></div>
+</div>
+
+<div class="card"><h2>الإشعارات</h2>
+  <select id="nUser"></select>
+  <input id="nText" placeholder="النص (مثال: أعجب بمنشورك)">
+  <input id="nTime" placeholder="الوقت (مثال: قبل ٥ دقائق)">
+  <select id="nNew"><option value="1">جديد</option><option value="0">قديم</option></select>
+  <button onclick="addNotif()">إضافة</button>
+  <div id="notifsList"></div>
+</div>
+
+<div class="card"><h2>طلبات الصداقة</h2>
+  <select id="rUser"></select><button onclick="addToList('requests','rUser')">إضافة طلب</button>
+  <div id="requestsList"></div>
+</div>
+
+<div class="card"><h2>قد تعرفهم</h2>
+  <select id="sUser"></select><button onclick="addToList('suggestions','sUser')">إضافة</button>
+  <div id="suggestionsList"></div>
+</div>
+
+<div class="card"><h2>القصص</h2>
+  <select id="stUser"></select><button onclick="addToList('stories','stUser')">إضافة</button>
+  <div id="storiesList"></div>
+</div>
+
+<div class="card"><h2>ريلز</h2>
+  <input id="rTitle" placeholder="عنوان الريلز">
+  <button onclick="addReel()">إضافة</button>
+  <div id="reelsList"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+let D = loadData();
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const uname = id => (D.users.find(u => u.id == id) || { name: "؟" }).name;
+const commit = () => { saveData(D); draw(); };
+
+function listHTML(items, delFn) {
+  return items.map((t, i) =>
+    `<div class="item"><span>${t}</span><button class="del" onclick="${delFn}(${i})">حذف</button></div>`).join("");
+}
+
+function draw() {
+  $("appName").value = D.appName;
+  $("meLetter").value = D.meLetter;
+
+  const opts = D.users.map(u => `<option value="${u.id}">${esc(u.name)}</option>`).join("");
+  ["pUser", "nUser", "rUser", "sUser", "stUser"].forEach(id => $(id).innerHTML = opts);
+
+  $("usersList").innerHTML = listHTML(D.users.map(u => esc(u.name)), "delUser");
+  $("postsList").innerHTML = listHTML(D.posts.map(p => esc(uname(p.user)) + ": " + esc(p.text.slice(0, 30))), "delPost");
+  $("notifsList").innerHTML = listHTML(D.notifications.map(n => esc(uname(n.user)) + " " + esc(n.text)), "delNotif");
+  $("requestsList").innerHTML = listHTML(D.requests.map(id => esc(uname(id))), "delReq");
+  $("suggestionsList").innerHTML = listHTML(D.suggestions.map(id => esc(uname(id))), "delSugg");
+  $("storiesList").innerHTML = listHTML(D.stories.map(id => esc(uname(id))), "delStory");
+  $("reelsList").innerHTML = listHTML(D.reels.map(r => esc(r.title)), "delReel");
+}
+
+function saveSettings() {
+  D.appName = $("appName").value || "EyeClip";
+  D.meLetter = $("meLetter").value || "m";
+  commit(); alert("تم الحفظ");
+}
+function addUser() {
+  const name = $("uName").value.trim();
+  if (!name) return alert("اكتب الاسم");
+  const id = Date.now();
+  D.users.push({ id, name, color: +$("uColor").value, mutual: +$("uMutual").value || 0 });
+  $("uName").value = ""; $("uMutual").value = "";
+  commit();
+}
+function delUser(i) {
+  const id = D.users[i].id;
+  D.users.splice(i, 1);
+  D.requests = D.requests.filter(x => x != id);
+  D.suggestions = D.suggestions.filter(x => x != id);
+  D.stories = D.stories.filter(x => x != id);
+  D.posts = D.posts.filter(p => p.user != id);
+  D.notifications = D.notifications.filter(n => n.user != id);
+  commit();
+}
+function addPost() {
+  const text = $("pText").value.trim();
+  if (!text || !$("pUser").value) return alert("اكتب نص المنشور");
+  D.posts.unshift({ user: +$("pUser").value, text, time: $("pTime").value || "الآن", image: $("pImage").value.trim() });
+  $("pText").value = ""; $("pTime").value = ""; $("pImage").value = "";
+  commit();
+}
+function delPost(i) { D.posts.splice(i, 1); commit(); }
+function addNotif() {
+  const text = $("nText").value.trim();
+  if (!text || !$("nUser").value) return alert("اكتب نص الإشعار");
+  D.notifications.unshift({ user: +$("nUser").value, text, time: $("nTime").value || "الآن", isNew: $("nNew").value == "1" });
+  $("nText").value = ""; $("nTime").value = "";
+  commit();
+}
+function delNotif(i) { D.notifications.splice(i, 1); commit(); }
+function addToList(list, selId) {
+  if (!$(selId).value) return;
+  D[list].push(+$(selId).value);
+  commit();
+}
+function delReq(i) { D.requests.splice(i, 1); commit(); }
+function delSugg(i) { D.suggestions.splice(i, 1); commit(); }
+function delStory(i) { D.stories.splice(i, 1); commit(); }
+function addReel() {
+  const title = $("rTitle").value.trim();
+  if (!title) return;
+  D.reels.push({ title }); $("rTitle").value = ""; commit();
+}
+function delReel(i) { D.reels.splice(i, 1); commit(); }
+function resetAll() {
+  if (confirm("استرجاع البيانات الافتراضية؟")) { resetData(); D = loadData(); draw(); }
+}
+draw();
+
+/* ===== الريلز الجديدة ===== */
+$("rTitle").parentElement.innerHTML = `<h2>ريلز</h2>
+  <select id="rlUser"></select>
+  <input id="rlCaption" placeholder="الوصف">
+  <input id="rlVideo" placeholder="رابط الفيديو أو مساره (videos/a.mp4)">
+  <button onclick="addReel()">نشر ريلز</button>
+  <div id="reelsList"></div>`;
+
+const _draw = draw;
+draw = function () {
+  _draw();
+  $("rlUser").innerHTML = D.users.map(u => `<option value="${u.id}">${esc(u.name)}</option>`).join("");
+  $("reelsList").innerHTML = listHTML(
+    D.reels.map(r => esc(uname(r.user)) + ": " + esc((r.caption || "").slice(0, 25))), "delReel");
+};
+
+addReel = function () {
+  const video = $("rlVideo").value.trim();
+  if (!video || !$("rlUser").value) return alert("اكتب رابط الفيديو");
+  D.reels.unshift({ user: +$("rlUser").value, caption: $("rlCaption").value.trim(), video, likes: 0, liked: false });
+  $("rlCaption").value = ""; $("rlVideo").value = "";
+  commit();
+};
+
+draw();
+</script>
+</body>
+</html>
